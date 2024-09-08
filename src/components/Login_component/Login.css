@@ -1,0 +1,98 @@
+.circle {
+  position: absolute;
+  width: 80vw;
+  height: 80vw;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  background-image: radial-gradient(
+    circle,
+    var(--secondary-blue),
+    transparent 50%
+  );
+  opacity: 50%;
+  z-index: 1;
+}
+
+.login_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  border-radius: 20px;
+  padding: 3rem;
+  background: rgba(86, 37, 91, 0.15);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(86, 37, 91, 0.075);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-white);
+  z-index: 2;
+}
+
+.login_container h2 {
+    font-family: var(--heading-font);
+}
+
+.login_container a {
+    color: gray;
+    font-size: 0.8rem;
+    font-family: var(--body-font);
+}
+
+.login_container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login_container form label {
+  color: var(--text-white);
+  font-family: var(--body-font);
+}
+
+.login_container form input[type="text"],
+.login_container form input[type="password"] {
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  margin: 0.5rem 0 1.5rem 0;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  color: var(--text-whiteF);
+  font-family: var(--body-font);
+}
+
+.login_container form input[type="submit"] {
+  border: 1px solid var(--accent-orange);
+  background-color: var(--accent-orange);
+  padding: 0.7rem 0 0.7rem 0;
+  border-radius: 100px;
+  cursor: pointer;
+  color: var(--text-white);
+  font-family: var(--body-font);
+}
+
+.login_container form input[type="submit"]:hover {
+  border: 1px solid var(--accent-orange);
+  background-color: transparent;
+  padding: 0.7rem 0 0.7rem 0;
+  border-radius: 100px;
+  color: var(--accent-orange);
+}
+
+.password_box {
+  position: relative;
+}
+
+.password_box ion-icon {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translateY(-40%);
+  cursor: pointer;
+}
+
