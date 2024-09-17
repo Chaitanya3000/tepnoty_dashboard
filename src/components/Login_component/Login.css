@@ -34,14 +34,20 @@
   z-index: 2;
 }
 
+.error_message {
+  color: red;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
 .login_container h2 {
-    font-family: var(--heading-font);
+  font-family: var(--heading-font);
 }
 
 .login_container a {
-    color: gray;
-    font-size: 0.8rem;
-    font-family: var(--body-font);
+  color: gray;
+  font-size: 0.8rem;
+  font-family: var(--body-font);
 }
 
 .login_container form {
@@ -54,6 +60,7 @@
   font-family: var(--body-font);
 }
 
+/* Input fields styling */
 .login_container form input[type="text"],
 .login_container form input[type="password"] {
   width: 100%;
@@ -64,6 +71,19 @@
   border-bottom: 1px solid white;
   color: var(--text-whiteF);
   font-family: var(--body-font);
+  transition: border-color 0.3s ease;
+}
+
+/* Error state - Red border when invalid */
+.login_container form input[type="text"].error,
+.login_container form input[type="password"].error {
+  border-bottom: 2px solid red;
+}
+
+/* Success state - Green border when valid */
+.login_container form input[type="text"].valid,
+.login_container form input[type="password"].valid {
+  border-bottom: 2px solid green;
 }
 
 .login_container form input[type="submit"] {
@@ -74,13 +94,11 @@
   cursor: pointer;
   color: var(--text-white);
   font-family: var(--body-font);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .login_container form input[type="submit"]:hover {
-  border: 1px solid var(--accent-orange);
   background-color: transparent;
-  padding: 0.7rem 0 0.7rem 0;
-  border-radius: 100px;
   color: var(--accent-orange);
 }
 
@@ -95,4 +113,3 @@
   transform: translateY(-40%);
   cursor: pointer;
 }
-
