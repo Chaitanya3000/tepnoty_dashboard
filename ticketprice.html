@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Price</title>
+</head>
+<body>
+    <script>
+           let age = prompt("Enter the age")
+
+            if (isNaN(age) || age < 0) {
+                document.write("Please enter a valid age.")
+            } else {
+                let price;
+                if (age < 12) {
+                    price = 5;
+                } else if (age < 18) {
+                    price = 10;
+                } else if (age < 60) {
+                    price = 20;
+                } else {
+                    price = 15;
+                }
+                document.write ("The ticket price is" + price)
+            }
+    </script>
+</body>
+</html>
