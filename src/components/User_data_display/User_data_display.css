@@ -1,6 +1,7 @@
 .data_display_background {
   background-color: var(--accent-blue);
-  height: 90vh;
+  min-height: 90vh;
+  padding: 5vh;
 }
 
 .install_info {

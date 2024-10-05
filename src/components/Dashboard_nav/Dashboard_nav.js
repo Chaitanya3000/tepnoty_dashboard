@@ -36,7 +36,8 @@ function Dashboard_nav() {
           <ul>
             <li><Link className="link_navigation" to="User_data_display">User Data</Link></li>
             <li><Link className="link_navigation" to="post">Posts</Link></li>
-            <li>Rating</li>
+            <li><Link className="link_navigation" to="reviews">Reviews</Link></li>
+            <li><Link className="link_navigation" to="delete_reviews">Delete Reviews</Link></li>
           </ul>
         </nav>
 

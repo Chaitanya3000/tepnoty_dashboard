@@ -2,48 +2,122 @@ import "./User_data_display.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MUIDataTable from "mui-datatables";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function User_data_display() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true); // Loading state
+  // Sample Data
+  const sampleUsers = [
+    {
+      user_id: "user001",
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      phoneNumber: "123-456-7890",
+      gender: "Female",
+      dob: "1990-01-01",
+    },
+    {
+      user_id: "user002",
+      name: "Bob Smith",
+      email: "bob.smith@example.com",
+      phoneNumber: "987-654-3210",
+      gender: "Male",
+      dob: "1985-05-05",
+    },
+    {
+      user_id: "user003",
+      name: "Charlie Brown",
+      email: "charlie.brown@example.com",
+      phoneNumber: "555-444-3333",
+      gender: "Male",
+      dob: "2000-09-15",
+    },
+    
+  ];
+
+  const [users, setUsers] = useState(sampleUsers); // Initialize with sample data
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false); // Dialog open state
+  const [selectedUser, setSelectedUser] = useState(null); // Selected user for editing
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+    gender: "",
+    dob: "",
+  });
 
   // Fetch users from the API when the component mounts
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3001/api/auth/get_details"
-        );
-        setUsers(response.data); // Set the user data
-        setLoading(false); // Data fetched, stop loading
+        const response = await axios.get("http://localhost:3001/api/auth/get_details");
+        setUsers(response.data); // Replace sample data with real data
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching the users:", error);
-        setLoading(false); // In case of error, stop loading
+        setLoading(false);
       }
     };
 
-    fetchUsers(); // Trigger the data fetch
-  }, []); // Empty dependency array to run the effect only once
+    fetchUsers();
+  }, []);
 
-  if (loading) {
-    return <div className="loading_screen"><h1>Loading...</h1></div>; // Display loading indicator while data is being fetched
-  }
+
+  // Handle form changes
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  // Open dialog for editing
+  const handleUpdate = (userId) => {
+    const user = users.find((user) => user.user_id === userId);
+    setSelectedUser(user);
+    setFormData({
+      name: user.name || "",
+      email: user.email || "",
+      phoneNumber: user.phoneNumber || "",
+      gender: user.gender || "",
+      dob: new Date(user.dob).toISOString().substring(0, 10), // Format to YYYY-MM-DD for the date input
+    });
+    setOpen(true); // Open the dialog
+  };
+
+  // Close the dialog
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedUser(null);
+  };
+
+  // Save the updates (this is just a sample, you can integrate with an API)
+  const handleSave = async () => {
+    console.log("Updated user:", formData);
+    // Update the backend API (you can replace this with actual API request)
+    try {
+      // Sample API call for updating user details
+      // await axios.put(`http://localhost:3001/api/auth/update_user/${selectedUser.user_id}`, formData);
+      
+      // Update the local state after the form is submitted
+      setUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          user.user_id === selectedUser.user_id ? { ...user, ...formData } : user
+        )
+      );
+      handleClose(); // Close the dialog
+    } catch (error) {
+      console.error("Error updating the user:", error);
+    }
+  };
 
   const handleDelete = async (userId) => {
     try {
       await axios.delete(`http://localhost:3001/api/auth/delete_user/${userId}`);
-      setUsers(users.filter(user => user.user_id !== userId)); // Update local state after deletion
+      setUsers(users.filter((user) => user.user_id !== userId));
     } catch (error) {
       console.error("Error deleting the user:", error);
     }
-  };
-
-  const handleUpdate = (userId) => {
-    console.log("Update user with id:", userId);
-    // Implement the update functionality or navigate to an update page
   };
 
   // Define the columns for the MUI DataTable
@@ -80,9 +154,9 @@ function User_data_display() {
       label: "Actions",
       options: {
         customBodyRender: (value, tableMeta) => {
-          const userId = tableMeta.rowData[5]; // Assuming `user_id` is at index 5
+          const userId = tableMeta.rowData[4]; // Assuming `user_id` is at index 4
           return (
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
               <IconButton onClick={() => handleUpdate(userId)} color="primary">
                 <EditIcon />
               </IconButton>
@@ -91,9 +165,9 @@ function User_data_display() {
               </IconButton>
             </div>
           );
-        }
-      }
-    }
+        },
+      },
+    },
   ];
 
   return (
@@ -105,124 +179,79 @@ function User_data_display() {
         </div>
         <div className="install_data">
           <h3>Number of active users</h3>
-          <h3>100</h3> {/* You might want to replace this with actual data */}
+          <h3>100</h3> {/* Sample data */}
         </div>
       </div>
 
-      <MUIDataTable className="MUIDataTable"
+      <MUIDataTable
+        className="MUIDataTable"
         title={"User Data"}
-        data={users} // Pass the users data to the DataTable
-        columns={columns} // Pass the columns configuration
+        data={users}
+        columns={columns}
         options={{
-          filterType: 'checkbox',
-          responsive: 'vertical',
+          filterType: "checkbox",
+          responsive: "vertical",
           rowsPerPage: 10,
-          selectableRows: 'none'
+          selectableRows: "none",
         }}
       />
+
+      {/* Popup form for editing user data */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Edit User</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            name="name"
+            value={formData.name}
+            onChange={handleFormChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Email"
+            name="email"
+            value={formData.email}
+            onChange={handleFormChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Phone Number"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleFormChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleFormChange}
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            value={formData.dob}
+            onChange={handleFormChange}
+            fullWidth
+            margin="dense"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">Cancel</Button>
+          <Button onClick={handleSave} color="primary">Save</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 export default User_data_display;
-
-
-
-// import "./User_data_display.css";
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import MUIDataTable from "mui-datatables";
-
-// function User_data_display() {
-//   const [users, setUsers] = useState([]);
-//   const [loading, setLoading] = useState(true); // Loading state
-
-//   // Fetch users from the API when the component mounts
-//   useEffect(() => {
-//     const fetchUsers = async () => {
-//       try {
-//         const response = await axios.get(
-//           "http://localhost:3001/api/auth/get_details"
-//         );
-//         setUsers(response.data); // Set the user data
-//         setLoading(false); // Data fetched, stop loading
-//       } catch (error) {
-//         console.error("Error fetching the users:", error);
-//         setLoading(false); // In case of error, stop loading
-//       }
-//     };
-
-//     fetchUsers(); // Trigger the data fetch
-//   }, []); // Empty dependency array to run the effect only once
-
-//   const columns = ["Name", "Company", "City", "State"];
-
-//   const data = [
-//     ["Joe James", "Test Corp", "Yonkers", "NY"],
-//     ["John Walsh", "Test Corp", "Hartford", "CT"],
-//     ["Bob Herm", "Test Corp", "Tampa", "FL"],
-//     ["James Houston", "Test Corp", "Dallas", "TX"],
-//   ];
-
-//   return (
-//     <>
-//       <div className="data_display_background">
-//         <div className="install_info">
-//           <div className="install_data">
-//             <h3>Number of downlodes</h3>
-//             <h3>{users.length}</h3>
-//           </div>
-//           <div className="install_data">
-//             <h3>Number of active users</h3>
-//             <h3>100</h3>
-//           </div>
-//         </div>
-//         <MUIDataTable className="MUIDataTable"
-//           title={"Employee List"}
-//           data={data}
-//           columns={columns}
-//         />
-//         {/* <div>
-//           <table class="data_table_container">
-//             <thead>
-//               <tr>
-//                 <th>
-//                   <h1>Phone Number</h1>
-//                 </th>
-//                 <th>
-//                   <h1>Name</h1>
-//                 </th>
-//                 <th>
-//                   <h1>Gender</h1>
-//                 </th>
-//                 <th>
-//                   <h1>Date of Birth</h1>
-//                 </th>
-//                 <th>
-//                   <h1>Username</h1>
-//                 </th>
-//                 <th>
-//                   <h1>Email</h1>
-//                 </th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {users.map((user, index) => (
-//                 <tr key={index}>
-//                   <td>{user.phoneNumber}</td>
-//                   <td>{user.name}</td>
-//                   <td>{user.gender}</td>
-//                   <td>{new Date(user.dob).toLocaleDateString()}</td>{" "}
-//                   <td>{user.user_id}</td>
-//                   <td>{user.email}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table> */}
-//         {/* </div> */}
-//       </div>
-//     </>
-//   );
-// }
-
-// export default User_data_display;
